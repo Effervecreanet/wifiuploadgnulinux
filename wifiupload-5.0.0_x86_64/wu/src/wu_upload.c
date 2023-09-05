@@ -16,7 +16,7 @@
 #include "wu_theme.h"
 #include "wu_date.h"
 
-extern const struct wu_resource wu_res[20];
+extern const struct wu_resource wu_res[19];
 extern FILE *fp_wu;
 
 int
@@ -320,9 +320,9 @@ req_post_upload_success(int susr, char *filename, char *filesize,
 	req_post_create_hdr_nv(hdrnv, "text/html");
 
 	if (theme_dark == true) { // success
-		tosend = (char*) wu_res[14].local_resource_dark;
+		tosend = (char*) wu_res[13].local_resource_dark;
 	} else {
-		tosend = (char*) wu_res[14].local_resource_light;
+		tosend = (char*) wu_res[13].local_resource_light;
 	}
 
 	if (stat(tosend, &statbuf) < 0) {

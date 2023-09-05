@@ -1,6 +1,6 @@
 #include "wu_content.h"
 
-const struct wu_resource wu_res[20] = {
+const struct wu_resource wu_res[19] = {
 	{"/images/ewu_bg.png", "images/wu_images_dark_theme/ewu_bg.png",
 			       "images/wu_images_light_theme/ewu_bg.png", "image/png"},
 
@@ -33,7 +33,6 @@ const struct wu_resource wu_res[20] = {
 
 	{"/credits", "pages/dark/credits", "pages/light/credits", "text/html"},
 	{"/index", "pages/dark/index", "pages/light/index", "text/html"},
-	{"/404", "pages/dark/404", "pages/light/404", "text/html"},
 	{"/empty_file", "pages/dark/empty_file", "pages/light/empty_file", "text/html"},
 	{"/success", "pages/dark/success", "pages/light/success", "text/html"},
 	{"/settings", "pages/dark/settings", "pages/light/settings", "text/html"},

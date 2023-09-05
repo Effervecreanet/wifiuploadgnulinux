@@ -11,7 +11,7 @@
 #include "wu_response.h"
 #include "wu_content.h"
 
-extern const struct wu_resource wu_res[20];
+extern const struct wu_resource wu_res[19];
 
 
 void
@@ -70,7 +70,7 @@ req_get_create_response(char *res, struct hdr_nv_resp hdrnv[32], short dark, cha
 
 	memset(hdrnv, 0, sizeof(struct hdr_nv_resp) * 32);
 	
-	for (cnt = 0; cnt < 20; cnt++) {
+	for (cnt = 0; cnt < 19; cnt++) {
 		if (strcmp(wu_res[cnt].resource, res) == 0)
 			break;
 	}

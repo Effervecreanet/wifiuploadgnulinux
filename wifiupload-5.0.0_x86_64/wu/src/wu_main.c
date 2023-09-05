@@ -29,7 +29,7 @@ extern char log_wu[512];
 extern FILE *fp_wu;
 extern FILE *fp_wu_http;
 
-extern const struct wu_resource wu_res[20];
+extern const struct wu_resource wu_res[19];
 unsigned char wu_res_path[64];
 
 void
@@ -99,7 +99,7 @@ match_resource(char *res)
 	else if (res && strcmp(res, "/quit") == 0)
 		return 3;
 
-	for (cnt = 0; cnt < 20; cnt++) {
+	for (cnt = 0; cnt < 19; cnt++) {
 		if (strcmp(wu_res[cnt].resource, res) == 0)
 			return 1;
 	}
