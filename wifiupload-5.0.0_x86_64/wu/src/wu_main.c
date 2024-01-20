@@ -35,7 +35,7 @@ unsigned char wu_res_path[64];
 void
 usage(char *progname)
 {
-	printf("%s: -a address -p port -l [LOG_PATH]\n", progname);
+	printf("%s: -a address -p port [-l LOG_PATH]\n", progname);
 
 	exit(0);
 }
