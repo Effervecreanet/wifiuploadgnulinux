@@ -18,16 +18,21 @@ FILE *fp_wu;
 int
 fopen_log(void)
 {
-	char *path;
+	char *path = malloc(254);;
 
 	if (log_path[0] == '\0')
 		strcpy(log_path, STD_LOG_PATH);
+	else
+		strcpy(path, log_path);
 
-	path = strdup(log_path);
 	strcat(path, LOG_WU_HTTP);
 	
 	fp_wu_http = fopen(path, "a+");
-	free(path);
+	if (fp_wu_http == NULL) {
+		perror("fopen");
+		exit(4);
+	}
+	memset(path, 0, 254);
 
 	if (fp_wu_http == NULL) {
 		perror("fopen");
@@ -37,11 +42,10 @@ fopen_log(void)
 	localtime_now();
 	fprintf(fp_wu_http, "Wifiupload http log successfully opened at %s\n", log_date_now);
 
-	path = strdup(log_path);
+	strcpy(path, log_path);
 	strcat(path, LOG_WU);
 	
 	fp_wu = fopen(path, "a+");
-	free(path);
 
 	if (fp_wu == NULL) {
 		perror("fopen");
@@ -50,6 +54,8 @@ fopen_log(void)
 
 	localtime_now();
 	fprintf(fp_wu, "Wifiupload log successfully opened at %s\n", log_date_now);
+
+	free(path);
 
 	return 1;
 }

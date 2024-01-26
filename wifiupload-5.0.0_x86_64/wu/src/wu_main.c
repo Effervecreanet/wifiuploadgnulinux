@@ -205,6 +205,8 @@ int main(int argc, char **argv)
 				break;
 			case 'l':
 				strncpy(log_path, optarg, 254);	
+				if (fopen_log() < 0)
+					return 0;
 				break;
 
 			default:
@@ -230,8 +232,6 @@ int main(int argc, char **argv)
 	if ((sserv = bind_input_addr(&sin)) < 0)
 		return 0;
 
-	if (fopen_log() < 0)
-		return 0;
 
 	signal(SIGINT, (void*)sgn_usr_int);
 	signal(SIGPIPE, (void*)sgn_usr_int);
