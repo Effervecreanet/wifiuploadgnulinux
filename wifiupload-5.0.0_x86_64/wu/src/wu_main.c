@@ -76,6 +76,17 @@ wu_is_installed(void)
 	return;
 }
 
+
+void*
+sgn_usr_int(int sgn)
+{
+	system("tput cnorm");
+
+	exit(0);
+	return 0;
+}
+
+
 int
 match_resource(char *res)
 {
@@ -180,8 +191,10 @@ int main(int argc, char **argv)
 	unsigned int nbytesent;
 	char input_hostfield[32];
 	bool hostfield = false;
+	short userprovided_port = 0;
+	short userprovided_logpath = 0;
+	char provided_port[sizeof("65535")];
 
-	memset(log_path, 0, 254);
 
 	if (argc < 2)
 		usage(argv[0]);
@@ -190,8 +203,13 @@ int main(int argc, char **argv)
 			case 'a':
 				break;
 			case 'p':
+				userprovided_port = 1;
+				memset(provided_port, 0, sizeof("65535"));
+				strcpy(provided_port, optarg);
 				break;
 			case 'l':
+				userprovided_logpath = 1;
+				memset(log_path, 0, 254);
 				strncpy(log_path, optarg, 254);	
 				break;
 
@@ -205,29 +223,26 @@ int main(int argc, char **argv)
 	
 	if (fopen_log() < 0)
 		return 0;
-	
-	if (argc == 2) {
-		if (convert_input_addr(argv[2], "80", &sin) < 0)
-			usage(argv[0]);
+	if (userprovided_port == 1) {
+		convert_input_addr(argv[2], provided_port, &sin);
 	} else {
-		if (convert_input_addr(argv[2], argv[4], &sin) < 0)
-			usage(argv[0]);
+		convert_input_addr(argv[2], "80", &sin);
 	}
 
 	memset(log_wu_http, 0, 512);
 
 	memset(input_hostfield, 0, 32);
 	strcpy(input_hostfield, argv[2]);
-
-	if (argc >= 4 && strcmp(argv[4], "80") != 0) {
+	if (strcmp(provided_port, "80") != 0) {
 		strcat(input_hostfield, ":");
-		strcat(input_hostfield, argv[4]);
+		strcat(input_hostfield, provided_port);
 	}
 
 	if ((sserv = bind_input_addr(&sin)) < 0)
 		return 0;
 
 
+	signal(SIGINT, (void*)sgn_usr_int);
 	signal(SIGPIPE, SIG_IGN);
 
 	system("tput civis");
