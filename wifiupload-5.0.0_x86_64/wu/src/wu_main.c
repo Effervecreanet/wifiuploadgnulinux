@@ -233,7 +233,7 @@ int main(int argc, char **argv)
 
 	memset(input_hostfield, 0, 32);
 	strcpy(input_hostfield, argv[2]);
-	if (strcmp(provided_port, "80") != 0) {
+	if (userprovided_port == 1 && strcmp(provided_port, "80") != 0) {
 		strcat(input_hostfield, ":");
 		strcat(input_hostfield, provided_port);
 	}
