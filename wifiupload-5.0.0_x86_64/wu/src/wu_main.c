@@ -35,7 +35,7 @@ unsigned char wu_res_path[64];
 void
 usage(char *progname)
 {
-	printf("%s: -a address -p port [-l LOG_PATH]\n", progname);
+	printf("%s: -a address [-p port] [-l LOG_PATH]\n", progname);
 
 	exit(0);
 }
@@ -56,19 +56,6 @@ convert_input_addr(char *address, char *port, struct sockaddr_in *sin)
 	sin->sin_family = AF_INET;
 
 	return 1;
-}
-
-void*
-sgn_usr_int(int sgn)
-{
-	printf("Closing log... quitting app\n");
-	fclose(fp_wu_http);
-	fclose(fp_wu);
-	system("tput cnorm");
-
-	exit(0);
-
-	return NULL;
 }
 
 void
@@ -154,6 +141,7 @@ log_entry(struct request_line *rline, unsigned int nbytesent, bool hostfield)
 		strcat(log_wu_http, buf);
 	}
 
+	printf("log_wu_http: %s", log_wu_http);
 	fprintf(fp_wu_http, log_wu_http); 
 	fprintf(fp_wu_http, "\n");
 
@@ -195,7 +183,7 @@ int main(int argc, char **argv)
 
 	memset(log_path, 0, 254);
 
-	if (argc < 5)
+	if (argc < 2)
 		usage(argv[0]);
 	while((opt = getopt(argc, argv, "a:p:l:")) != -1) {
 		switch(opt) {
@@ -205,8 +193,6 @@ int main(int argc, char **argv)
 				break;
 			case 'l':
 				strncpy(log_path, optarg, 254);	
-				if (fopen_log() < 0)
-					return 0;
 				break;
 
 			default:
@@ -216,15 +202,24 @@ int main(int argc, char **argv)
 	} 
 	
 	wu_is_installed();
-
-	if (convert_input_addr(argv[2], argv[4], &sin) < 0)
-		usage(argv[0]);
+	
+	if (fopen_log() < 0)
+		return 0;
+	
+	if (argc == 2) {
+		if (convert_input_addr(argv[2], "80", &sin) < 0)
+			usage(argv[0]);
+	} else {
+		if (convert_input_addr(argv[2], argv[4], &sin) < 0)
+			usage(argv[0]);
+	}
 
 	memset(log_wu_http, 0, 512);
 
 	memset(input_hostfield, 0, 32);
 	strcpy(input_hostfield, argv[2]);
-	if (strcmp(argv[4], "80") != 0) {
+
+	if (argc >= 4 && strcmp(argv[4], "80") != 0) {
 		strcat(input_hostfield, ":");
 		strcat(input_hostfield, argv[4]);
 	}
@@ -233,13 +228,12 @@ int main(int argc, char **argv)
 		return 0;
 
 
-	signal(SIGINT, (void*)sgn_usr_int);
-	signal(SIGPIPE, (void*)sgn_usr_int);
+	signal(SIGPIPE, SIG_IGN);
 
 	system("tput civis");
 
 
-	printf("Starting wifiupload on %s:%s...\n", argv[2], argv[4]);
+	printf("Starting wifiupload on %s...\n", input_hostfield);
 
 	download_dir_exist();
 
@@ -270,6 +264,7 @@ int main(int argc, char **argv)
 		if (parse_hdr_nv(susr, (struct hdr_nv*)&hdrnv) < 0)
 			continue;
 
+		printf("SNTO: %s\n", input_hostfield);
 		ret = check_hostfield(hdrnv, input_hostfield);
 		if (ret > 0) {
 			hostfield = true;

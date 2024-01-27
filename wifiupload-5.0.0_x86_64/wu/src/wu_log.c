@@ -30,12 +30,14 @@ fopen_log(void)
 	fp_wu_http = fopen(path, "a+");
 	if (fp_wu_http == NULL) {
 		perror("fopen");
+		free(path);
 		exit(4);
 	}
 	memset(path, 0, 254);
 
 	if (fp_wu_http == NULL) {
 		perror("fopen");
+		free(path);
 		return -1;
 	}
 
@@ -49,6 +51,7 @@ fopen_log(void)
 
 	if (fp_wu == NULL) {
 		perror("fopen");
+		free(path);
 		return -1;
 	}
 
