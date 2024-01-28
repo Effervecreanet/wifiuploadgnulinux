@@ -152,7 +152,6 @@ log_entry(struct request_line *rline, unsigned int nbytesent, bool hostfield)
 		strcat(log_wu_http, buf);
 	}
 
-	printf("log_wu_http: %s", log_wu_http);
 	fprintf(fp_wu_http, log_wu_http); 
 	fprintf(fp_wu_http, "\n");
 
@@ -279,7 +278,6 @@ int main(int argc, char **argv)
 		if (parse_hdr_nv(susr, (struct hdr_nv*)&hdrnv) < 0)
 			continue;
 
-		printf("SNTO: %s\n", input_hostfield);
 		ret = check_hostfield(hdrnv, input_hostfield);
 		if (ret > 0) {
 			hostfield = true;

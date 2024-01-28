@@ -9,6 +9,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <asm/termbits.h>
 
 #include "wu_http.h"
 #include "wu_response.h"
@@ -142,10 +144,13 @@ receive_file(int susr, char *filename, unsigned long long filesize, unsigned sho
 	char humanreadable1[10];
 	char humanreadable2[10];
 	char humanreadable3[10];
-	char progressbar[100];
+	char progressbar[512];
 	unsigned short percent = 1;
+	unsigned short progressbaridx = 1;
 	time_t now;
 	unsigned int txcur = 0;
+	struct winsize wsize, wsizechanged;
+	unsigned short i;
 
 	memset(path, 0, 254);
 	strcpy(path, "./Downloads/");
@@ -157,9 +162,12 @@ receive_file(int susr, char *filename, unsigned long long filesize, unsigned sho
 		return -1;
 	}
 
-	memset(progressbar, ' ', 99);
+	memset(&wsize, 0, sizeof(struct winsize));
+	ioctl(1, TIOCGWINSZ, &wsize);
+	memset(progressbar, 0, 512);
+	memset(progressbar, ' ', wsize.ws_col - 50);
 	progressbar[0] = '|';
-	progressbar[99] = '|';
+	progressbar[wsize.ws_col - 50] = '|';
 	now = time(0);
 	memset(humanreadable3, 0, 10);
 	humanreadable3[0] = '-';
@@ -200,14 +208,25 @@ receive_file(int susr, char *filename, unsigned long long filesize, unsigned sho
 		tohumanreadable(filesizebak - filesize, humanreadable1);
 		tohumanreadable(filesizebak, humanreadable2);
 		
-		if (abs(filesize - filesizebak) > (filesizebak / 100) * percent) {
-			if (percent < 99)
-				progressbar[percent++] = '=';
-			else
-				percent++;
+		percent = abs(100 - (filesize * 100) / filesizebak);
+		progressbaridx = abs((wsize.ws_col - 51) - (filesize * (wsize.ws_col - 51)) / filesizebak);
+		progressbar[progressbaridx] = '=';
+
+		memset(&wsizechanged, 0, sizeof(struct winsize));
+		ioctl(1, TIOCGWINSZ, &wsizechanged);
+		if (wsize.ws_col != wsizechanged.ws_col) {
+			memset(progressbar, 0, 512);
+			memset(progressbar, ' ', wsizechanged.ws_col - 50);
+			progressbar[0] = '|';
+			progressbar[wsizechanged.ws_col - 50] = '|';
+			progressbaridx = abs((wsizechanged.ws_col - 51) - (filesize * (wsizechanged.ws_col - 51)) / filesizebak);
+			for (i = 1; i <= progressbaridx; i++)
+				progressbar[i] = '=';
+			memcpy(&wsize, &wsizechanged, sizeof(struct winsize));
 		}
 
-		printf("%hu %% %s %s / %s total %s/s            \r", percent, progressbar,
+
+		printf("%hu %% %s %s / %s total %s/s\r", percent, progressbar,
 									  humanreadable1,
 									  humanreadable2,
 									  humanreadable3);
