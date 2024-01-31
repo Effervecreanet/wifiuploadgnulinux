@@ -83,7 +83,9 @@ handle_req(int susr, struct request_line *rline,
 			 struct hdr_nv hdrnv[32])
 {
 
-	if (strcmp(rline->method, "GET") == 0) {
+	if (strcmp(rline->method, "GET") == 0 &&
+	    strcmp(rline->resource, "/upload") != 0 &&
+	    strcmp(rline->resource, "/theme") != 0) {
 		return req_get(susr, rline->resource, hdrnv);
 	} else if (strcmp(rline->method, "POST") == 0) {
 		if (strcmp(rline->resource, "/theme") == 0) {
