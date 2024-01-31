@@ -17,7 +17,6 @@
 <p style="width: 40%%; display: inline-block;font-size: 43px; margin: 5%% 5%%;">File size:</p><p style=" font-size: 43px; width: 40%%; text-align: right; display:inline-block; font-size: 43px; margin: 0; padding: 0;">%s</p>
 <p style=" width: 40%%; display: inline-block;font-size: 43px; margin: 5%% 5%%;">Elapsed time:</p><p style=" font-size: 43px; width: 40%%; text-align: right; display:inline-block; font-size: 43px; margin: 0; padding: 0;">%s</p>
 <p style=" width: 40%%; display: inline-block;font-size: 43px; margin: 5%% 5%%;">Average Mo/s:</p><p style=" font-size: 43px; width: 40%%; text-align: right; display:inline-block; font-size: 43px; margin: 0; padding: 0;">%s</p>
-      <a href="/openRep" style="display: block; width: 90%%; margin: 140px 5%% 170px 5%%; padding: 11px 0;  background: #CECECE; background-image: url('images/ewu_openfolder.png'); background-position: 23px; background-repeat: no-repeat; color: black; text-align: center; border-radius: 9px; height: 64px; font-size: 48px; text-decoration:none;">Open directory</a>
 
     </form>
 	
