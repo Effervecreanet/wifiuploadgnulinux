@@ -226,7 +226,7 @@ receive_file(int susr, char *filename, unsigned long long filesize, unsigned sho
 		}
 
 
-		printf("%hu %% %s %s / %s total %s/s\r", percent, progressbar,
+		printf("%hu %% %s %s / %s total %s/s  \r", percent, progressbar,
 									  humanreadable1,
 									  humanreadable2,
 									  humanreadable3);
